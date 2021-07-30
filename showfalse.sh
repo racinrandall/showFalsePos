@@ -207,7 +207,7 @@ echo "Verify there are no longer any files listed more permissive than '0740'"
 printf "\n"
 echo -e "${BOLD}RHEL-08-020000 - RHEL 8 temporary user accounts must be provisioned with an expiration time of 72 hours or less.${NORM}"
 echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
-echo 'for x in `awk -F: '{if($3 >= 1000 && $7 !~ "nologin") print $1}' /etc/passwd`; do chage -l $x; done'
+echo "'for x in `awk -F: '{if($3 >= 1000 && $7 !~ "nologin") print $1}' /etc/passwd`; do chage -l $x; done'"
 echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
 for x in `awk -F: '{if($3 >= 1000 && $7 !~ "nologin") print $1}' /etc/passwd`; do chage -l $x; done
 echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
@@ -255,7 +255,7 @@ echo "Both files have the required remember setting"
 printf "\n"
 echo -e "${BOLD}RHEL-08-020270 - RHEL 8 emergency accounts must be automatically removed or disabled after the crisis is resolved or within 72 hours.${NORM}"
 echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
-echo 'for x in `awk -F: '{if($3 >= 1000 && $7 !~ "nologin") print $1}' /etc/passwd`; do chage -l $x; done'
+echo "'for x in `awk -F: '{if($3 >= 1000 && $7 !~ "nologin") print $1}' /etc/passwd`; do chage -l $x; done'"
 echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
 for x in `awk -F: '{if($3 >= 1000 && $7 !~ "nologin") print $1}' /etc/passwd`; do chage -l $x; done
 echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
@@ -400,3 +400,132 @@ echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
 echo "If the parameter "server" is not set or is not set to an authoritative DoD time source, this is a finding."
 echo -e "${RED}${BOLD}Notes related to scan:${NC}${NORM}"
 echo "Scan appars to be looking specifically for a ntp server at 0.us.pool.ntp.org rather than a local time source"
+
+printf "\n"
+echo -e "${BOLD}RHEL-08-040004 - RHEL 8 must enable mitigations against processor-based vulnerabilities.${NORM}"
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo 'grub2-editenv - list | grep pti'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+grub2-editenv - list | grep pti
+echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
+echo "If the "pti" entry does not equal "on", is missing, or the line is commented out, this is a finding."
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo 'grep audit /etc/default/grub'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+grep audit /etc/default/grub
+echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
+echo "If "pti" is not set to "on", is missing or commented out, this is a finding."
+echo -e "${RED}${BOLD}Notes related to scan:${NC}${NORM}"
+echo "Correct output appears in scan output"
+
+printf "\n"
+echo -e "${BOLD}RHEL-08-040030 - RHEL 8 must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the Ports, Protocols, and Services Management (PPSM) Category Assignments List (CAL) and vulnerability assessments.${NORM}"
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo 'firewall-cmd --list-all-zones'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+firewall-cmd --list-all-zones
+echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
+printf "Ask the System Administrator for the site or program Ports, Protocols, and Services Management Component Local Service Assessment (PPSM CLSA). Verify the services allowed by the firewall match the PPSM CLSA.\nIf there are additional ports, protocols, or services that are not in the PPSM CLSA, or there are ports, protocols, or services that are prohibited by the PPSM Category Assurance List (CAL), this is a finding."
+echo -e "${RED}${BOLD}Notes related to scan:${NC}${NORM}"
+echo "Scan shows firewall not running.  Must reboot VM after running hardening playbook to restart multiple services"
+
+printf "\n"
+echo -e "${BOLD}RHEL-08-040060${NORM}"
+echo -e "${RED}${BOLD}Notes related to scan:${NC}${NORM}"
+echo "This specific STIG ID was removed as of V1 R2 of the DISA RHEL8 STIG.  The scanner plugin in based upon V1 R1.  Current STIG is V1 R3 released 26 July 2021"
+
+printf "\n"
+echo -e "${BOLD}RHEL-08-040070 - The RHEL 8 file system automounter must be disabled unless required.${NORM}"
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo 'systemctl status autofs'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+systemctl status autofs
+echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
+echo "If the "autofs" status is set to "active" and is not documented with the Information System Security Officer (ISSO) as an operational requirement, this is a finding."
+echo -e "${RED}${BOLD}Notes related to scan:${NC}${NORM}"
+echo "The autofs service is not installed and therefore can not be either enabled or disabled"
+
+printf "\n"
+echo -e "${BOLD}RHEL-08-040090 - A RHEL 8 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems.${NORM}"
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo ' firewall-cmd --state'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+firewall-cmd --state
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo 'firewall-cmd --get-active-zones'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+firewall-cmd --get-active-zones
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo 'firewall-cmd --info-zone=mint| grep target'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+firewall-cmd --info-zone=mint| grep target
+echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
+echo "If no zones are active on the RHEL 8 interfaces or if the target is set to a different option other than "DROP", this is a finding."
+echo -e "${RED}${BOLD}Notes related to scan:${NC}${NORM}"
+echo "Scan shows firewall not running.  Must reboot VM after running hardening playbook to restart multiple services"
+
+printf "\n"
+echo -e "${BOLD}RHEL-08-040150 - A firewall must be able to protect against or limit the effects of Denial of Service (DoS) attacks by ensuring RHEL 8 can implement rate-limiting measures on impacted network interfaces.${NORM}"
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo 'systemctl status nftables.service'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+systemctl status nftables.service
+echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
+echo "Verify "firewalld" has "nftables" set as the default backend:"
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo 'grep -i firewallbackend /etc/firewalld/firewalld.conf'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+grep -i firewallbackend /etc/firewalld/firewalld.conf
+echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
+echo "If the "nftables" is not active, running and set as the "firewallbackend" default, this is a finding."
+echo -e "${RED}${BOLD}Notes related to scan:${NC}${NORM}"
+echo "Scan shows nftables not running.  Must reboot VM after running hardening playbook to restart multiple services"
+
+printf "\n"
+echo -e "${BOLD}RHEL-08-040300 - The RHEL 8 file integrity tool must be configured to verify extended attributes.${NORM}"
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo 'cat /etc/aide.conf'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+cat /etc/aide.conf
+echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
+echo "Check the "aide.conf" file to determine if the "xattrs" rule has been added to the rule list being applied to the files and directories selection lists."
+echo -e "${RED}${BOLD}Notes related to scan:${NC}${NORM}"
+echo "The aide.conf file uses variables to set what it checks for on files and directories.  The scan shows that the file use CONTENT_EX which maps to FIPSR.  The FIPSR variable is mapped to the actual attributes that enable specific aide checks.  This does include xattrs."
+
+printf "\n"
+echo -e "${BOLD}RHEL-08-040310 - The RHEL 8 file integrity tool must be configured to verify Access Control Lists (ACLs).${NORM}"
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo 'cat /etc/aide.conf'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+cat /etc/aide.conf
+echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
+echo "If the "acl" rule is not being used on all selection lines in the "/etc/aide.conf" file, is commented out, or ACLs are not being checked by another file integrity tool, this is a finding."
+echo -e "${RED}${BOLD}Notes related to scan:${NC}${NORM}"
+echo "The aide.conf file uses variables to set what it checks for on files and directories.  The scan shows that the file use CONTENT_EX which maps to FIPSR.  The FIPSR variable is mapped to the actual attributes that enable specific aide checks.  This does include acl."
+
+printf "\n"
+echo -e "${BOLD}RHEL-08-040350 - If the Trivial File Transfer Protocol (TFTP) server is required, the RHEL 8 TFTP daemon must be configured to operate in secure mode.${NORM}"
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo 'yum list installed tftp-server'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+yum list installed tftp-server
+echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
+printf "If a TFTP server is not installed, this is Not Applicable.\nIf a TFTP server is installed, check for the server arguments with the following command:\n"
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo 'grep server_args /etc/xinetd.d/tftp'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+grep server_args /etc/xinetd.d/tftp
+echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
+echo "If the "server_args" line does not have a "-s" option, and a subdirectory is not assigned, this is a finding."
+echo -e "${RED}${BOLD}Notes related to scan:${NC}${NORM}"
+echo "The tftp-server is not installed, so there will not bea /etc/xinitd.d/tftp file for the scanner to check."
+
+printf "\n"
+echo -e "${BOLD}RHEL-08-010100 - RHEL 8, for certificate-based authentication, must enforce authorized access to the corresponding private key.${NORM}"
+echo -e "${GREEN}${BOLD}Command:${NC}${NORM}"
+echo 'ssh-keygen -y -f /path/to/file'
+echo -e "${BLUE}${BOLD}Results:${NC}${NORM}"
+echo -e "${RED}${BOLD}STIG Requirement:${NC}${NORM}"
+echo "If the contents of the key are displayed, this is a finding."
+echo -e "${RED}${BOLD}Notes related to scan:${NC}${NORM}"
+echo "This check can not be automated.  An individual Sysadmin/Security person must inspect the filesystem to find any priviate keys.  This system shouldn't have any private keys on it as no keys should have been generated there.  There are public keys that were installed to allow ansible to harden the system as well as allow access from the Nessus scanner without a password."
