@@ -1,8 +1,8 @@
 #!/bin/bash
 # Created by Charles Randall chrandal@redhat.com
-# For US Mint
 # Date 29 July 2021
 # Purpose of script is to give an output that can be used to verify false findings from Nessus Scans dated 29 July 2021
+
 
 RED='\033[0;31m'
 NC='\033[0m' # No Color
