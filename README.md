@@ -1,7 +1,6 @@
 # showFalsePos
-The one script in this repo is designed to be run as root on the target machine and all results and errors printed to STDOUT.
-
+The one script in this repo is designed to be run as root on the target machine and all results and errors printed to a file.
+Unlike the main branch, this is designed to have the results redirected to a file.
 Copy the file to the target system, then run the script with the following command:
-`sudo bash showfalse.sh`
+`sudo bash showfalse.sh > results.txt 2>&1`
 
-The results will print to screen with colors enabled.  If you want to re-direct the output to a file instead, use the BW branch.
